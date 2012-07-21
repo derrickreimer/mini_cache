@@ -2,7 +2,7 @@
 
 MiniCache is a lightweight in-memory key-value store for Ruby objects.
 
-## Why Use MiniCache?
+## Motivation
 
 It is common practice to cache certain values on an object that are 
 computationally expensive to obtain, such as a property that requires a 
@@ -32,7 +32,6 @@ Here's a demonstration of how MiniCache solves this problem:
 
 ```ruby
 class Account
-
   def lookup_role(user)
     # Execute a database query to find the user's role.
   end
@@ -43,7 +42,7 @@ class Account
     #   @role ||= lookup_user(user)
     #
     # because the value depends on the user argument. Also, the
-    # role could be nil if the user does not actually have a role.
+    # value could be nil if the user does not actually have a role.
     # You can probably see how the solution could get pretty ugly.
     # This is where MiniCache comes into play.
     self.cache.get_or_set("role-#{user.id}") do
@@ -57,8 +56,8 @@ class Account
 end
 ```
 
-The `#get_or_set` method works similarly to the ||= operator, except it 
-knows how to handle false-y values and it's keyed off of a unique string ID.
+The `#get_or_set` method works similarly to the `||=` operator, except it 
+knows how to handle `false` and `nil` values and it's keyed off of a unique string ID.
 Problem solved!
 
 ## Installation
@@ -93,7 +92,8 @@ Set and retrieve data using `#get` and `#set`:
 store.set("age", 24)
 store.set("birth_year") { 1988 }
 
-year = store.get("birth_year")
+store.get("birth_year")
+=> 1988
 ```
 
 Use the `#get_or_set` method to either set the value if it hasn't already been
