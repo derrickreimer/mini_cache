@@ -124,9 +124,11 @@ Other convenience methods:
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## MIT License
+## License
 
 Copyright &copy; 2012 Derrick Reimer
+
+MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
