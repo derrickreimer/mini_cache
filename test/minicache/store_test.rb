@@ -27,6 +27,10 @@ class MiniCache::StoreTest < Test::Unit::TestCase
     should "return nil if not set" do
       assert_nil @store.get("name")
     end
+    
+    should "raise a TypeError if key is not valid" do
+      assert_raises(TypeError) { @store.get([1, 2]) }
+    end
   end
   
   context "#set" do
@@ -39,6 +43,10 @@ class MiniCache::StoreTest < Test::Unit::TestCase
       @store.set("name") { "Derrick" }
       assert_equal "Derrick", @store.get("name")
     end
+    
+    should "raise a TypeError if key is not valid" do
+      assert_raises(TypeError) { @store.set([1, 2], "foo") }
+    end
   end
   
   context "#set?" do
@@ -49,6 +57,10 @@ class MiniCache::StoreTest < Test::Unit::TestCase
     
     should "be false if key has not been set" do
       assert_equal false, @store.set?("foobar")
+    end
+    
+    should "raise a TypeError if key is not valid" do
+      assert_raises(TypeError) { @store.set?([1, 2]) }
     end
   end
   
@@ -77,6 +89,10 @@ class MiniCache::StoreTest < Test::Unit::TestCase
       @store.get_or_set("name") { "Joe" }
       assert_equal "Joe", @store.get("name")
     end
+    
+    should "raise a TypeError if key is not valid" do
+      assert_raises(TypeError) { @store.get_or_set([1, 2], "foo") }
+    end
   end
   
   context "#unset" do
@@ -102,7 +118,8 @@ class MiniCache::StoreTest < Test::Unit::TestCase
       data = { "name" => "Derrick", "occupation" => "Developer" }
       @store.load(data)
       
-      all_data = { "title" => "Mr.", "name" => "Derrick", "occupation" => "Developer" }
+      all_data = { "title" => "Mr.", 
+        "name" => "Derrick", "occupation" => "Developer" }
       assert_equal all_data, @store.data
     end
     
@@ -111,6 +128,11 @@ class MiniCache::StoreTest < Test::Unit::TestCase
       @store.load(data)
       stringified_data = { "name" => "Derrick" }
       assert_equal stringified_data, @store.data
+    end
+    
+    should "raise a TypeError if an invalid key is encountered" do
+      data = { [1, 2] => "Derrick" }
+      assert_raises(TypeError) { @store.load(data) }
     end
   end
 end

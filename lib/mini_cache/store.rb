@@ -22,6 +22,7 @@ module MiniCache
     # Returns the value set for the key; if nothing is
     #   set, returns nil.
     def get(key)
+      check_key!(key)
       @data[key.to_s]
     end
 
@@ -44,6 +45,7 @@ module MiniCache
     #
     # Returns the value given.
     def set(key, value = nil)
+      check_key!(key)
       @data[key.to_s] = block_given? ? yield : value
     end
 
@@ -54,6 +56,7 @@ module MiniCache
     #
     # Returns a Boolean.
     def set?(key)
+      check_key!(key)
       @data.keys.include?(key.to_s)
     end
 
@@ -94,6 +97,7 @@ module MiniCache
     #
     # Returns the value.
     def unset(key)
+      check_key!(key)
       @data.delete(key.to_s)
     end
     
@@ -120,7 +124,22 @@ module MiniCache
     #
     # Returns nothing.
     def load(data)
-      data.each { |k, v| @data[k.to_s] = v }
+      data.each do |key, value|
+        check_key!(key)
+        @data[key.to_s] = value
+      end
     end
+    
+    private
+    
+      # Internal: Raises an error if the key is not a String
+      # or a Symbol.
+      #
+      # key - A key provided by the user.
+      def check_key!(key)
+        unless key.is_a?(String) || key.is_a?(Symbol)
+          raise TypeError, "key must be a String or Symbol"
+        end
+      end
   end
 end
