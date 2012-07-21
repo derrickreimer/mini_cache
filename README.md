@@ -1,8 +1,10 @@
 # MiniCache
 
 MiniCache is a lightweight in-memory key-value store for Ruby objects.
-This gem has no external dependencies and can be used in a Ruby project
-(including Rails apps).
+This gem has no external dependencies and has been tested in MRI 1.9.x and
+JRuby 1.9 mode.
+
+Extracted from [Leadscreener](http://www.leadscreener.com/).
 
 ## Motivation
 
