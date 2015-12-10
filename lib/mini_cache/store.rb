@@ -1,11 +1,11 @@
 module MiniCache
   class Store
     include Enumerable
-    
+
     # Public: Returns the hash of key-value pairs.
     attr_reader :data
 
-    # Public: Initializes a new TinyCache object.
+    # Public: Initializes a new MiniCache object.
     #
     # data - A Hash of key-value pairs (optional).
     #
@@ -100,7 +100,7 @@ module MiniCache
       check_key!(key)
       @data.delete(key.to_s)
     end
-    
+
     # Public: Clears all key-value pairs.
     #
     # Returns nothing.
@@ -117,7 +117,7 @@ module MiniCache
     def each(&block)
       @data.each { |k, v| yield(k, v) }
     end
-    
+
     # Public: Loads a hash of data into the cache.
     #
     # data - A Hash of data with either String or Symbol keys.
@@ -129,9 +129,9 @@ module MiniCache
         @data[key.to_s] = value
       end
     end
-    
+
     private
-    
+
       # Internal: Raises an error if the key is not a String
       # or a Symbol.
       #
