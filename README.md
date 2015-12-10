@@ -8,9 +8,9 @@ Extracted from [Leadscreener](http://www.leadscreener.com/).
 
 ## Motivation
 
-It is common practice to cache certain values on an object that are 
-computationally expensive to obtain, such as a property that requires a 
-database query. 
+It is common practice to cache certain values on an object that are
+computationally expensive to obtain, such as a property that requires a
+database query.
 
 The simplest way to do this is by storing the value in an instance variable:
 
@@ -19,14 +19,14 @@ class Account
   def calculate_balance
     # Do something expensive.
   end
-  
+
   def balance
     @balance ||= self.calculate_balance
   end
 end
 ```
 
-While this method works in many scenarios, it fails when the value you 
+While this method works in many scenarios, it fails when the value you
 need to cache is:
 
 - Either `nil` or `false`
@@ -39,7 +39,7 @@ class Account
   def lookup_role(user)
     # Execute a database query to find the user's role.
   end
-  
+
   def role(user)
     # Perform the lookup once and cache the value. We can't use
     #
@@ -53,14 +53,14 @@ class Account
       self.lookup_role(user)
     end
   end
-  
+
   def cache
     @cache ||= MiniCache::Store.new
   end
 end
 ```
 
-The `#get_or_set` method works similarly to the `||=` operator, except it 
+The `#get_or_set` method works similarly to the `||=` operator, except it
 knows how to handle `false` and `nil` values and it's keyed off of a unique string ID.
 Problem solved!
 
@@ -125,28 +125,3 @@ Other convenience methods:
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
-## License
-
-Copyright &copy; 2012 Derrick Reimer
-
-MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
