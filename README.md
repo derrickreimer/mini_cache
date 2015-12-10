@@ -4,8 +4,6 @@ MiniCache is a lightweight in-memory key-value store for Ruby objects.
 This gem has no external dependencies and has been tested in MRI 1.9.x and
 JRuby 1.9 mode.
 
-Extracted from [Leadscreener](http://www.leadscreener.com/).
-
 ## Motivation
 
 It is common practice to cache certain values on an object that are
