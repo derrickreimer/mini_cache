@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + '/../test_helper.rb'
+require File.expand_path("../../test_helper.rb", __FILE__)
 
-class MiniCache::StoreTest < Test::Unit::TestCase
+class MiniCache::StoreTest < MiniTest::Test
   def setup
     @store = MiniCache::Store.new
   end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module MiniCache
   class Store
     include Enumerable
@@ -12,7 +13,7 @@ module MiniCache
     # Returns nothing.
     def initialize(data = {})
       @data = {}
-      self.load(data)
+      load(data)
     end
 
     # Public: Retrieves the value for a given key.
@@ -114,7 +115,7 @@ module MiniCache
     #         and value of each pair.
     #
     # Yields the String key and value.
-    def each(&block)
+    def each
       @data.each { |k, v| yield(k, v) }
     end
 
@@ -132,14 +133,14 @@ module MiniCache
 
     private
 
-      # Internal: Raises an error if the key is not a String
-      # or a Symbol.
-      #
-      # key - A key provided by the user.
-      def check_key!(key)
-        unless key.is_a?(String) || key.is_a?(Symbol)
-          raise TypeError, "key must be a String or Symbol"
-        end
+    # Internal: Raises an error if the key is not a String
+    # or a Symbol.
+    #
+    # key - A key provided by the user.
+    def check_key!(key)
+      unless key.is_a?(String) || key.is_a?(Symbol)
+        raise TypeError, "key must be a String or Symbol"
       end
+    end
   end
 end
