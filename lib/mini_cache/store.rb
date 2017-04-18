@@ -8,7 +8,8 @@ module MiniCache
 
     # Public: Initializes a new MiniCache object.
     #
-    # data - A Hash of key-value pairs (optional).
+    # data - A Hash of key-value pairs (optional). 
+    #        The values can be String or MiniCache::Data.
     #
     # Returns nothing.
     def initialize(data = {})
@@ -33,16 +34,25 @@ module MiniCache
     #
     # key   - A String or Symbol representing the key.
     # value - Any object that represents the value (optional).
+    #         The value can be a MiniCache::Data.
     #         Not used if a block is given.
-    # block - A block of code that returns the value to set
-    #         (optional).
+    # block - A block of code that returns the value to set (optional).
+    #         Can be set a MiniCache::Data in the block.
+    # expires_in - Time, in seconds, to expire the cache (optional).
+    #              If not set, the cache never expires.
     #
     # Examples
     #
     #   cache.set("name", "Derrick")
     #   => "Derrick"
     #
+    #   cache.set("name", "Derrick", expires_in: 60)
+    #   => "Derrick"
+    #
     #   cache.set("name") { "Joe" }
+    #   => "Joe"
+    #
+    #   cache.set("name") { MiniCache::Data.new("Joe", 60) }
     #   => "Joe"
     #
     # Returns the value given.
@@ -75,9 +85,12 @@ module MiniCache
     #
     # key   - A String or Symbol representing the key.
     # value - Any object that represents the value (optional).
+    #         The value can be a MiniCache::Data.
     #         Not used if a block is given.
-    # block - A block of code that returns the value to set
-    #         (optional).
+    # block - A block of code that returns the value to set (optional).
+    #         Can be set a MiniCache::Data in the block.
+    # expires_in - Time, in seconds, to expire the cache (optional).
+    #              If not set, the cache never expires.
     #
     # Examples
     #
@@ -151,6 +164,7 @@ module MiniCache
       end
     end
 
+    # Internal: Verifies if data is expired and unset it
     def expires!(key)
       unset(key) if @data[key.to_s]&.expired?
     end
