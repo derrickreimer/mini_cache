@@ -25,7 +25,7 @@ module MiniCache
         data = { "name" => MiniCache::Data.new("Derrick", 60) }
         store = MiniCache::Store.new(data)
         assert_equal(
-          { data.keys.first => data.values.first },
+          data,
           store.data
         )
       end
@@ -72,6 +72,16 @@ module MiniCache
 
       should "accept the value as a block" do
         @store.set("name") { "Derrick" }
+        assert_equal "Derrick", @store.get("name")
+      end
+
+      should "accept the value as a MiniCache::Data argument" do
+        @store.set("name", MiniCache::Data.new("Derrick"))
+        assert_equal "Derrick", @store.get("name")
+      end
+
+      should "accept the value as a block with MiniCache::Data" do
+        @store.set("name") { MiniCache::Data.new("Derrick") }
         assert_equal "Derrick", @store.get("name")
       end
 
