@@ -88,6 +88,46 @@ module MiniCache
       should "raise a TypeError if key is not valid" do
         assert_raises(TypeError) { @store.set([1, 2], "foo") }
       end
+      
+      should "returns cached value" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.set("name", "Derrick", expires_in: 60)
+          Timecop.travel(Time.now + 59) do
+            assert_equal("Derrick", @store.get("name"))
+          end
+        end
+      end
+
+      should "returns nil, because cache was expired" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.set("name", "Derrick", expires_in: 60)
+          Timecop.travel(Time.now + 60) do
+            assert_nil(@store.get("name"))
+          end
+        end
+      end
+
+      should "returns cached value. Using block" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.get_or_set("name", expires_in: 60) {
+            "Derrick"
+          }
+          Timecop.travel(Time.now + 59) do
+            assert_equal("Derrick", @store.get("name"))
+          end
+        end
+      end
+
+      should "returns nil, because cache was expired. Using block" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.get_or_set("name", expires_in: 60) {
+            "Derrick"
+          }
+          Timecop.travel(Time.now + 60) do
+            assert_nil(@store.get("name"))
+          end
+        end
+      end      
     end
 
     context "#set?" do
@@ -150,8 +190,36 @@ module MiniCache
         Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
           @store.set("name", "Derrick", expires_in: 60)
           Timecop.travel(Time.now + 60) do
-            @store.get_or_set("name", "Gunter", expires_in: 70)
+            @store.get_or_set("name", "Gunter", expires_in: 60)
             assert_equal("Gunter", @store.get("name"))
+          end
+        end
+      end
+
+      should "returns first set value. Using block" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.get_or_set("name", expires_in: 60) {
+            "Derrick"
+          }
+          Timecop.travel(Time.now + 59) do
+            @store.get_or_set("name", expires_in: 60) {
+              "Gunter"
+            }
+            assert_equal("Derrick", @store.get("name"))
+          end
+        end
+      end
+
+      should "returns next set value. Using block" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.get_or_set("name", expires_in: 60) {
+            "Derrick"
+          }
+          Timecop.travel(Time.now + 60) do
+            @store.get_or_set("name", expires_in: 60) {
+              "Derrick"
+            }
+            assert_equal("Derrick", @store.get("name"))
           end
         end
       end

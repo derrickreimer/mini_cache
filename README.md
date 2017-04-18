@@ -102,10 +102,14 @@ store.get("birth_year")
 
 # Sets an expiration time to cache (in seconds)
 store.set("age", 24, expires_in: 60)
+store.set("day", expires_in: 60) { 12 }
 store.set("birth_year") { MiniCache::Data.new(1988, 60) }
 
 store.get("age")
 => 24
+
+store.get("day")
+=> 12
 
 store.get("birth_year")
 => 1988
@@ -113,6 +117,9 @@ store.get("birth_year")
 sleep(60)
 
 store.get("age")
+=> nil
+
+store.get("day")
 => nil
 
 store.get("birth_year")
@@ -131,10 +138,16 @@ store.get_or_set("birth_year") { 1964 }
 
 # Also sets an expiration time to cache, like `#set`
 
+store.get_or_set("age", expires_in: 60) { 24 }
+=> 24
+
 store.get_or_set("birth_year") { MiniCache::Data.new(1988, 60) }
 => 1988
 
 sleep(60)
+
+store.get_or_set("age", expires_in: 60) { 28 }
+=> 28
 
 store.get_or_set("birth_year") { MiniCache::Data.new(1964, 60) }
 => 1964
