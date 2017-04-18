@@ -24,6 +24,7 @@ module MiniCache
     #   set, returns nil.
     def get(key)
       check_key!(key)
+      expires!(key)
       @data[key.to_s]&.value
     end
 
@@ -64,6 +65,7 @@ module MiniCache
     # Returns a Boolean.
     def set?(key)
       check_key!(key)
+      expires!(key)
       @data.keys.include?(key.to_s)
     end
 
@@ -147,6 +149,10 @@ module MiniCache
       unless key.is_a?(String) || key.is_a?(Symbol)
         raise TypeError, "key must be a String or Symbol"
       end
+    end
+
+    def expires!(key)
+      unset(key) if @data[key.to_s]&.expired?
     end
   end
 end

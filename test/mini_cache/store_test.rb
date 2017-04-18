@@ -20,7 +20,7 @@ module MiniCache
           store.data
         )
       end
-      
+
       should "load seed data using MiniCache::Data" do
         data = { "name" => MiniCache::Data.new("Derrick", 60) }
         store = MiniCache::Store.new(data)
@@ -28,7 +28,7 @@ module MiniCache
           { data.keys.first => data.values.first },
           store.data
         )
-      end      
+      end
     end
 
     context "#get" do
@@ -43,6 +43,24 @@ module MiniCache
 
       should "raise a TypeError if key is not valid" do
         assert_raises(TypeError) { @store.get([1, 2]) }
+      end
+
+      should "return an not expired value" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.set("name", "Derrick", expires_in: 60)
+          Timecop.travel(Time.now + 59) do
+            assert_equal("Derrick", @store.get("name"))
+          end
+        end
+      end
+
+      should "not return an expired value" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.set("name", "Derrick", expires_in: 60)
+          Timecop.travel(Time.now + 60) do
+            assert_nil @store.get("name")
+          end
+        end
       end
     end
 
@@ -106,6 +124,26 @@ module MiniCache
 
       should "raise a TypeError if key is not valid" do
         assert_raises(TypeError) { @store.get_or_set([1, 2], "foo") }
+      end
+
+      should "returns first set value" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.set("name", "Derrick", expires_in: 60)
+          Timecop.travel(Time.now + 59) do
+            @store.get_or_set("name", "Gunter", expires_in: 60)
+            assert_equal("Derrick", @store.get("name"))
+          end
+        end
+      end
+
+      should "returns next set value" do
+        Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
+          @store.set("name", "Derrick", expires_in: 60)
+          Timecop.travel(Time.now + 60) do
+            @store.get_or_set("name", "Gunter", expires_in: 70)
+            assert_equal("Gunter", @store.get("name"))
+          end
+        end
       end
     end
 

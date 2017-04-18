@@ -53,7 +53,7 @@ module MiniCache
           end
         end
       end
-      
+
       should "not be expired because expires_in is nil" do
         Timecop.freeze(Time.local(2010, 4, 5, 12, 0, 0)) do
           data = MiniCache::Data.new("Gunter")
