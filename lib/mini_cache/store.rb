@@ -24,7 +24,7 @@ module MiniCache
     #   set, returns nil.
     def get(key)
       check_key!(key)
-      @data[key.to_s][:value] unless @data[key.to_s].nil?
+      @data[key.to_s]&.value
     end
 
     # Public: Sets a value for a given key either as
@@ -45,9 +45,15 @@ module MiniCache
     #   => "Joe"
     #
     # Returns the value given.
-    def set(key, value = nil)
+    def set(key, value = nil, expires_in: nil)
       check_key!(key)
-      @data[key.to_s] = block_given? ? parse_value(yield) : parse_value(value)
+      data = block_given? ? yield : value
+      @data[key.to_s] = if data.is_a?(MiniCache::Data)
+                          data
+                        else
+                          MiniCache::Data.new(data, expires_in)
+                        end
+      get(key)
     end
 
     # Public: Determines whether a value has been set for
@@ -86,9 +92,9 @@ module MiniCache
     #   => "Engineer"
     #
     # Returns the value.
-    def get_or_set(key, value = nil)
+    def get_or_set(key, value = nil, expires_in: nil)
       return get(key) if set?(key)
-      set(key, block_given? ? yield : value)
+      set(key, block_given? ? yield : value, expires_in: expires_in)
     end
 
     # Public: Removes the key-value pair from the cache
@@ -127,7 +133,7 @@ module MiniCache
     def load(data)
       data.each do |key, value|
         check_key!(key)
-        @data[key.to_s] = parse_value(value)
+        set(key, value)
       end
     end
 
@@ -141,11 +147,6 @@ module MiniCache
       unless key.is_a?(String) || key.is_a?(Symbol)
         raise TypeError, "key must be a String or Symbol"
       end
-    end
-
-    def parse_value(value)
-      return { value: value, expires_in: nil } unless value.is_a?(Hash)
-      value
     end
   end
 end
