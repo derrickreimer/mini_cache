@@ -6,7 +6,7 @@ module MiniCache
 
     def initialize(value, expires_in = nil)
       @value = value
-      @expires_in = Time.now + expires_in unless expires_in.nil?
+      @expires_in = expires_in.nil? ? nil : Time.now + expires_in
     end
 
     def expired?

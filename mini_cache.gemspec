@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = MiniCache::VERSION
 
   gem.add_development_dependency "shoulda-context"
-  gem.add_development_dependency "timecop"
+  gem.add_development_dependency "timecop", "~> 0.8"
   gem.add_development_dependency "rake"
+  gem.add_development_dependency "minitest"
 end
