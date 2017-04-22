@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module MiniCache
   class Store
     include Enumerable
@@ -7,12 +8,13 @@ module MiniCache
 
     # Public: Initializes a new MiniCache object.
     #
-    # data - A Hash of key-value pairs (optional).
+    # data - A Hash of key-value pairs (optional). 
+    #        The values can be String or MiniCache::Data.
     #
     # Returns nothing.
     def initialize(data = {})
       @data = {}
-      self.load(data)
+      load(data)
     end
 
     # Public: Retrieves the value for a given key.
@@ -23,7 +25,8 @@ module MiniCache
     #   set, returns nil.
     def get(key)
       check_key!(key)
-      @data[key.to_s]
+      expires!(key)
+      @data[key.to_s]&.value
     end
 
     # Public: Sets a value for a given key either as
@@ -31,22 +34,37 @@ module MiniCache
     #
     # key   - A String or Symbol representing the key.
     # value - Any object that represents the value (optional).
+    #         The value can be a MiniCache::Data.
     #         Not used if a block is given.
-    # block - A block of code that returns the value to set
-    #         (optional).
+    # block - A block of code that returns the value to set (optional).
+    #         Can be set a MiniCache::Data in the block.
+    # expires_in - Time, in seconds, to expire the cache (optional).
+    #              If not set, the cache never expires.
     #
     # Examples
     #
     #   cache.set("name", "Derrick")
     #   => "Derrick"
     #
+    #   cache.set("name", "Derrick", expires_in: 60)
+    #   => "Derrick"
+    #
     #   cache.set("name") { "Joe" }
     #   => "Joe"
     #
+    #   cache.set("name") { MiniCache::Data.new("Joe", 60) }
+    #   => "Joe"
+    #
     # Returns the value given.
-    def set(key, value = nil)
+    def set(key, value = nil, expires_in: nil)
       check_key!(key)
-      @data[key.to_s] = block_given? ? yield : value
+      data = block_given? ? yield : value
+      @data[key.to_s] = if data.is_a?(MiniCache::Data)
+                          data
+                        else
+                          MiniCache::Data.new(data, expires_in)
+                        end
+      get(key)
     end
 
     # Public: Determines whether a value has been set for
@@ -57,6 +75,7 @@ module MiniCache
     # Returns a Boolean.
     def set?(key)
       check_key!(key)
+      expires!(key)
       @data.keys.include?(key.to_s)
     end
 
@@ -66,9 +85,12 @@ module MiniCache
     #
     # key   - A String or Symbol representing the key.
     # value - Any object that represents the value (optional).
+    #         The value can be a MiniCache::Data.
     #         Not used if a block is given.
-    # block - A block of code that returns the value to set
-    #         (optional).
+    # block - A block of code that returns the value to set (optional).
+    #         Can be set a MiniCache::Data in the block.
+    # expires_in - Time, in seconds, to expire the cache (optional).
+    #              If not set, the cache never expires.
     #
     # Examples
     #
@@ -85,9 +107,9 @@ module MiniCache
     #   => "Engineer"
     #
     # Returns the value.
-    def get_or_set(key, value = nil)
+    def get_or_set(key, value = nil, expires_in: nil)
       return get(key) if set?(key)
-      set(key, block_given? ? yield : value)
+      set(key, block_given? ? yield : value, expires_in: expires_in)
     end
 
     # Public: Removes the key-value pair from the cache
@@ -114,7 +136,7 @@ module MiniCache
     #         and value of each pair.
     #
     # Yields the String key and value.
-    def each(&block)
+    def each
       @data.each { |k, v| yield(k, v) }
     end
 
@@ -126,20 +148,25 @@ module MiniCache
     def load(data)
       data.each do |key, value|
         check_key!(key)
-        @data[key.to_s] = value
+        set(key, value)
       end
     end
 
     private
 
-      # Internal: Raises an error if the key is not a String
-      # or a Symbol.
-      #
-      # key - A key provided by the user.
-      def check_key!(key)
-        unless key.is_a?(String) || key.is_a?(Symbol)
-          raise TypeError, "key must be a String or Symbol"
-        end
+    # Internal: Raises an error if the key is not a String
+    # or a Symbol.
+    #
+    # key - A key provided by the user.
+    def check_key!(key)
+      unless key.is_a?(String) || key.is_a?(Symbol)
+        raise TypeError, "key must be a String or Symbol"
       end
+    end
+
+    # Internal: Verifies if data is expired and unset it
+    def expires!(key)
+      unset(key) if @data[key.to_s]&.expired?
+    end
   end
 end

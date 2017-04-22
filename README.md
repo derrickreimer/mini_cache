@@ -94,8 +94,36 @@ Set and retrieve data using `#get` and `#set`:
 store.set("age", 24)
 store.set("birth_year") { 1988 }
 
+store.get("age")
+=> 24
+
 store.get("birth_year")
 => 1988
+
+# Sets an expiration time to cache (in seconds)
+store.set("age", 24, expires_in: 60)
+store.set("day", expires_in: 60) { 12 }
+store.set("birth_year") { MiniCache::Data.new(1988, 60) }
+
+store.get("age")
+=> 24
+
+store.get("day")
+=> 12
+
+store.get("birth_year")
+=> 1988
+
+sleep(60)
+
+store.get("age")
+=> nil
+
+store.get("day")
+=> nil
+
+store.get("birth_year")
+=> nil
 ```
 
 Use the `#get_or_set` method to either set the value if it hasn't already been
@@ -107,6 +135,22 @@ store.set("birth_year") { 1988 }
 
 store.get_or_set("birth_year") { 1964 }
 => 1988  # Did not overwrite previously set value
+
+# Also sets an expiration time to cache, like `#set`
+
+store.get_or_set("age", expires_in: 60) { 24 }
+=> 24
+
+store.get_or_set("birth_year") { MiniCache::Data.new(1988, 60) }
+=> 1988
+
+sleep(60)
+
+store.get_or_set("age", expires_in: 60) { 28 }
+=> 28
+
+store.get_or_set("birth_year") { MiniCache::Data.new(1964, 60) }
+=> 1964
 ```
 
 Other convenience methods:
