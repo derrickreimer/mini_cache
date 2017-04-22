@@ -1,8 +1,7 @@
 # MiniCache
 
 MiniCache is a lightweight in-memory key-value store for Ruby objects.
-This gem has no external dependencies and has been tested in MRI 1.9.x and
-JRuby 1.9 mode.
+This gem requires Ruby version 2.3.0 or higher.
 
 ## Motivation
 
