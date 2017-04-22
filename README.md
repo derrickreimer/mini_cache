@@ -1,5 +1,7 @@
 # MiniCache
 
+[![Build Status](https://travis-ci.org/djreimer/mini_cache.svg?branch=master)](https://travis-ci.org/djreimer/mini_cache)
+
 MiniCache is a lightweight in-memory key-value store for Ruby objects.
 This gem requires Ruby version 2.3.0 or higher.
 

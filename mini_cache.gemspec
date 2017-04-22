@@ -14,7 +14,8 @@ Gem::Specification.new do |gem|
   gem.name          = "mini_cache"
   gem.require_paths = ["lib"]
   gem.version       = MiniCache::VERSION
-  
+
   gem.add_development_dependency "shoulda-context"
   gem.add_development_dependency "timecop"
+  gem.add_development_dependency "rake"
 end
