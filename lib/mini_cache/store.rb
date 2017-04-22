@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module MiniCache
   class Store # :nodoc:
     include Enumerable

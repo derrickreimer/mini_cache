@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 # frozen_string_literal: true
+
 require File.expand_path('../lib/mini_cache/version', __FILE__)
 
 Gem::Specification.new do |gem|
@@ -21,5 +22,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'timecop', '~> 0.8'
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'minitest'
-  gem.add_development_dependency 'rubocop'
+  gem.add_development_dependency 'rubocop', '~> 0.48'
 end
