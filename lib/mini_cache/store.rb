@@ -62,7 +62,7 @@ module MiniCache
       @data[key.to_s] = if data.is_a?(MiniCache::Data)
                           data
                         else
-                          MiniCache::Data.new(data, expires_in)
+                          MiniCache::Data.new(data, expires_in: expires_in)
                         end
       get(key)
     end

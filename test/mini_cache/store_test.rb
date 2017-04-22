@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require File.expand_path('../../test_helper.rb', __FILE__)
+
 module MiniCache
   class StoreTest < MiniTest::Test
     def setup
@@ -22,7 +23,7 @@ module MiniCache
       end
 
       should 'load seed data using MiniCache::Data' do
-        data = { 'name' => MiniCache::Data.new('Derrick', 60) }
+        data = { 'name' => MiniCache::Data.new('Derrick', expires_in: 60) }
         store = MiniCache::Store.new(data)
         assert_equal(
           data,

@@ -4,7 +4,7 @@ module MiniCache
     attr_reader :value
     attr_reader :expires_in
 
-    def initialize(value, expires_in = nil)
+    def initialize(value, expires_in: nil)
       @value = value
       @expires_in = expires_in.nil? ? nil : Time.now + expires_in
     end
