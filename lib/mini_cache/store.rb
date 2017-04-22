@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module MiniCache
-  class Store
+  class Store # :nodoc:
     include Enumerable
 
     # Public: Returns the hash of key-value pairs.
@@ -8,7 +8,7 @@ module MiniCache
 
     # Public: Initializes a new MiniCache object.
     #
-    # data - A Hash of key-value pairs (optional). 
+    # data - A Hash of key-value pairs (optional).
     #        The values can be String or MiniCache::Data.
     #
     # Returns nothing.
@@ -159,9 +159,8 @@ module MiniCache
     #
     # key - A key provided by the user.
     def check_key!(key)
-      unless key.is_a?(String) || key.is_a?(Symbol)
-        raise TypeError, "key must be a String or Symbol"
-      end
+      return if key.is_a?(String) || key.is_a?(Symbol)
+      raise TypeError, 'key must be a String or Symbol'
     end
 
     # Internal: Verifies if data is expired and unset it
