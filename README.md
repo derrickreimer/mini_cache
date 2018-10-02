@@ -1,9 +1,11 @@
 # MiniCache
 
-[![Build Status](https://travis-ci.org/djreimer/mini_cache.svg?branch=master)](https://travis-ci.org/djreimer/mini_cache)
+[![Build Status](https://travis-ci.org/derrickreimer/mini_cache.svg?branch=master)](https://travis-ci.org/derrickreimer/mini_cache)
 
 MiniCache is a lightweight in-memory key-value store for Ruby objects.
 This gem requires Ruby version 2.3.0 or higher.
+
+**Important Note:** This gem uses standard `Hash` under the covers to store data. By design, Ruby hashes are not thread-safe, so MiniCache is not thread-safe. If you need concurrent access across threads/processes, I recommend using a "real" cache store like Memcached or Redis.
 
 ## Motivation
 
